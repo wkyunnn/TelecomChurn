@@ -332,30 +332,36 @@ elif st.session_state.page == "Dashboard":
     st.title("Customer Insights Dashboard")
     st.write("This dashboard provides insights into customer data and churn prediction.")
 
-    # Load the dataset
-    df = pd.read_csv('cell2celltrain.csv')
+    # File uploader
+    uploaded_file = st.file_uploader("Upload your dataset (CSV file)", type=["csv"])
+    
+    if uploaded_file is not None:
+        df = pd.read_csv(uploaded_file)
+        st.write("Dataset Uploaded Successfully!")
+        
+        # Interactive filters for the dashboard
+        st.write("### Customer Data")
+        selected_columns = st.multiselect("Select columns to display", df.columns.tolist(), default=df.columns.tolist())
+        st.dataframe(df[selected_columns])
 
-    # Interactive filters for the dashboard
-    st.write("### Customer Data")
-    selected_columns = st.multiselect("Select columns to display", df.columns.tolist(), default=df.columns.tolist())
-    st.dataframe(df[selected_columns])
+        # Variables for comparison
+        st.write("### Compare Variables")
+        col1, col2 = st.columns(2)
+        with col1:
+            x_var = st.selectbox("Select X-axis variable", options=df.columns.tolist(), index=0)
+        with col2:
+            y_var = st.selectbox("Select Y-axis variable", options=df.columns.tolist(), index=1)
 
-    # Variables for comparison
-    st.write("### Compare Variables")
-    col1, col2 = st.columns(2)
-    with col1:
-        x_var = st.selectbox("Select X-axis variable", options=df.columns.tolist(), index=df.columns.tolist().index('MonthlyRevenue'))
-    with col2:
-        y_var = st.selectbox("Select Y-axis variable", options=df.columns.tolist(), index=df.columns.tolist().index('Churn'))
+        # Generate and display the plot
+        st.write(f"### {x_var} vs {y_var}")
+        if df[x_var].dtype == 'object' or df[y_var].dtype == 'object':
+            plot = px.histogram(df, x=x_var, color=y_var, barmode='group', title=f'{x_var} vs {y_var}')
+        else:
+            plot = px.scatter(df, x=x_var, y=y_var, title=f'{x_var} vs {y_var}', labels={x_var: x_var, y_var: y_var}, color='Churn', trendline='ols')
 
-    # Generate and display the plot
-    st.write(f"### {x_var} vs {y_var}")
-    if df[x_var].dtype == 'object' or df[y_var].dtype == 'object':
-        plot = px.histogram(df, x=x_var, color=y_var, barmode='group', title=f'{x_var} vs {y_var}')
+        st.plotly_chart(plot)
     else:
-        plot = px.scatter(df, x=x_var, y=y_var, title=f'{x_var} vs {y_var}', labels={x_var: x_var, y_var: y_var}, color='Churn', trendline='ols')
-
-    st.plotly_chart(plot)
+        st.write("Please upload a dataset to visualize.")
 
     st.sidebar.button("Home", on_click=set_page, args=("Home",))
     st.sidebar.button("Predict Churn", on_click=set_page, args=("Predict Churn",))
