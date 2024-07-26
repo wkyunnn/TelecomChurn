@@ -2,5 +2,5 @@ streamlit
 pandas
 joblib
 plotly
-scipy
-statsmodels
+scipy==1.12.0
+statsmodels==0.14.2
