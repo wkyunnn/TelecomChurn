@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import joblib
 import plotly.express as px
+import statsmodels.api as sm
 
 # Load the trained model
 model = joblib.load('xgb_model.pkl')
@@ -178,7 +179,7 @@ def set_page(page):
     st.session_state.page = page
 
 # Sidebar header
-st.sidebar.title("Navigation")
+st.sidebar.title("Navigation Bar")
 
 # Home page
 if st.session_state.page == "Home":
