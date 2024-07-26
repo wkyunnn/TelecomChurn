@@ -4,4 +4,3 @@ joblib
 plotly
 scipy
 statsmodels
-xgboost
