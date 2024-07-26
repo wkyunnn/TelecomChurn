@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import joblib
 import plotly.express as px
+import statsmodels.api as sm
 
 # Load the trained model
 model = joblib.load('xgb_model.pkl')
@@ -357,7 +358,7 @@ elif st.session_state.page == "Dashboard":
         if df[x_var].dtype == 'object' or df[y_var].dtype == 'object':
             plot = px.histogram(df, x=x_var, color=y_var, barmode='group', title=f'{x_var} vs {y_var}')
         else:
-            plot = px.scatter(df, x=x_var, y=y_var, title=f'{x_var} vs {y_var}', labels={x_var: x_var, y_var: y_var}, color='Churn', trendline='ols')
+            plot = px.scatter(df, x=x_var, y=y_var, title=f'{x_var} vs {y_var}', labels={x_var: x_var, y_var: y_var}, trendline='ols')
 
         st.plotly_chart(plot)
     else:
