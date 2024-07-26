@@ -4,3 +4,4 @@ joblib
 plotly
 xgboost
 statsmodels
+python==3.12.0
