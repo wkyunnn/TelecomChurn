@@ -60,11 +60,11 @@ def generate_recommendations(input_data, churn_rate):
 
 # Set colour based on churn rate
 def get_churn_color(churn_rate):
-    # Define a gradient from green to yellow to red
+    # Define a gradient from green (low churn) to red (high churn)
     if churn_rate <= 50:
-        green = int(255 * (churn_rate / 50))
-        red = 255
-        return f'rgb(255, {green}, 0)'  # Green to Yellow
+        green = 255
+        red = int(255 * (churn_rate / 50))
+        return f'rgb({red}, {green}, 0)'  # Green to Yellow
     else:
         red = 255
         green = int(255 * ((100 - churn_rate) / 50))
