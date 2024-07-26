@@ -3,4 +3,4 @@ pandas
 plotly
 joblib
 xgboost
-statsmodels==0.13.2
+statsmodels
