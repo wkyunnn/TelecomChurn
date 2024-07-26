@@ -2,10 +2,12 @@ import streamlit as st
 import pandas as pd
 import joblib
 import plotly.express as px
-import statsmodels.api as sm
 
 # Load the trained model
-model = joblib.load('xgb_model.pkl')
+try:
+    model = joblib.load('xgb_model.pkl')
+except Exception as e:
+    st.error(f"Error loading model: {e}")
 
 # Calculate the prediction function
 def predict_churn(input_data):
@@ -22,39 +24,39 @@ def generate_recommendations(input_data, churn_rate):
     # High churn rate (greater than 75%)
     if churn_rate > 75:
         recommendations.append("Customer is very likely to churn. Consider offering a significant discount or promotion to retain the customer.")
-        if input_data['OverageMinutes'] > 100:
+        if input_data.get('OverageMinutes', 0) > 100:
             recommendations.append("Provide a higher plan with more minutes to avoid overage charges.")
-        if input_data['CustomerCareCalls'] > 10:
+        if input_data.get('CustomerCareCalls', 0) > 10:
             recommendations.append("Investigate the reasons for frequent customer care calls and improve the service.")
-        if input_data['RoamingCalls'] > 5:
+        if input_data.get('RoamingCalls', 0) > 5:
             recommendations.append("Offer a special roaming plan to reduce costs for the customer.")
     
     # Moderate to high churn rate (between 50% and 75%)
     elif 50 < churn_rate <= 75:
         recommendations.append("Customer shows signs of dissatisfaction. Consider the following actions to improve satisfaction:")
-        if input_data['MonthlyRevenue'] > 70:
+        if input_data.get('MonthlyRevenue', 0) > 70:
             recommendations.append("Offer a discount or value-added services to increase perceived value.")
-        if input_data['OverageMinutes'] > 50:
+        if input_data.get('OverageMinutes', 0) > 50:
             recommendations.append("Review the current plan and suggest a plan with higher included minutes.")
-        if input_data['CustomerCareCalls'] > 5:
+        if input_data.get('CustomerCareCalls', 0) > 5:
             recommendations.append("Enhance customer care interactions to resolve issues more effectively.")
-        if input_data['RoamingCalls'] > 3:
+        if input_data.get('RoamingCalls', 0) > 3:
             recommendations.append("Provide information about roaming cost-saving options.")
     
     # Low to moderate churn rate (between 25% and 50%)
     elif 25 < churn_rate <= 50:
         recommendations.append("Customer satisfaction seems moderate. Consider the following to enhance their experience:")
-        if input_data['MonthlyRevenue'] > 50:
+        if input_data.get('MonthlyRevenue', 0) > 50:
             recommendations.append("Check if the current plan aligns with customer usage patterns and suggest adjustments if needed.")
-        if input_data['OverageMinutes'] > 20:
+        if input_data.get('OverageMinutes', 0) > 20:
             recommendations.append("Educate the customer on usage monitoring to avoid overage charges.")
-        if input_data['CustomerCareCalls'] > 3:
+        if input_data.get('CustomerCareCalls', 0) > 3:
             recommendations.append("Proactively follow up on past customer care interactions to ensure satisfaction.")
     
     # Low churn rate (less than 25%)
     else:
         recommendations.append("Customer seems satisfied based on current data. Continue monitoring their usage and feedback.")
-        if input_data['MonthlyRevenue'] > 50:
+        if input_data.get('MonthlyRevenue', 0) > 50:
             recommendations.append("Offer loyalty rewards or incentives to maintain their satisfaction.")
     
     return recommendations
@@ -179,7 +181,7 @@ def set_page(page):
     st.session_state.page = page
 
 # Sidebar header
-st.sidebar.title("Navigation Bar")
+st.sidebar.title("Navigation")
 
 # Home page
 if st.session_state.page == "Home":
