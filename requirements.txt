@@ -4,3 +4,4 @@ plotly
 joblib
 xgboost
 statsmodels
+scippy
